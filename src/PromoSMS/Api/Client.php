@@ -4,6 +4,7 @@ namespace PromoSMS\Api;
 
 use Guzzle\Http\ClientInterface;
 use Guzzle\Http\Client as HttpClient;
+use PromoSMS\Api\Response\Response;
 use PromoSMS\Api\Sms\SmsInterface;
 
 /**
@@ -64,23 +65,14 @@ class Client
     /**
      * @param \PromoSMS\Api\Sms\SmsInterface $sms
      * @throws \InvalidArgumentException
-     * @return $this
+     * @return \PromoSMS\Api\Response\Response
      */
     public function send(SmsInterface $sms)
     {
         $this->validateSms($sms);
+        $response = $this->getClient()->post($this->getSendUrl(), array(), $this->buildQueryParams($sms))->send();
 
-        $response = $this->getClient()->post($this->getSendUrl(), array(), array(
-            'query' => array(
-                'login' => $this->login,
-                'password' => md5($this->password),
-                'to' => implode(',', $sms->getReceivers()),
-                'msg' => $sms->getMessage(),
-                'type' => $sms->getType()
-            )
-        ))->send();
-
-        return $response->getBody(true);
+        return new Response($response->getBody(true));
     }
 
     /**
@@ -111,8 +103,10 @@ class Client
      */
     protected function validateSms(SmsInterface $sms)
     {
-        if (!$sms->getReceiversCount()) {
-            throw new \InvalidArgumentException('Cant send sms with empty receivers list');
+        $receiver = $sms->getReceiver();
+
+        if (empty($receiver)) {
+            throw new \InvalidArgumentException('Cant send sms with empty receiver');
         }
 
         $message = $sms->getMessage();
@@ -120,5 +114,36 @@ class Client
         if (empty($message)) {
             throw new \InvalidArgumentException('Cant send sms with empty message');
         }
+    }
+
+    /**
+     * Build query params array for SmsInterface
+     *
+     * @param \PromoSMS\Api\Sms\SmsInterface $sms
+     * @return array
+     */
+    protected function buildQueryParams(SmsInterface $sms)
+    {
+        $params = array(
+            'login' => $this->login,
+            'pass' => $this->password,
+            'type' => $sms->getType(),
+            'to' =>  $sms->getReceiver(),
+            'message' => $sms->getMessage()
+        );
+
+        if (!$sms->isSingle()) {
+            $params['single'] = 0;
+        }
+
+        if ($sms->isPl()) {
+            $params['pl'] = 1;
+        }
+
+        if ($sms->hasTime()) {
+            $params['time'] = $sms->getTime();
+        }
+
+        return $params;
     }
 }

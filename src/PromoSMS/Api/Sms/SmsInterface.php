@@ -14,31 +14,54 @@ interface SmsInterface
     public function getMessage();
 
     /**
-     * @return array
+     * Set text message content.
+     *
+     * @param string $message
+     * @return \PromoSMS\Api\Sms\SmsInterface
      */
-    public function getReceivers();
+    public function setMessage($message);
 
     /**
+     * Return receiver number
+     *
+     * @return string
+     */
+    public function getReceiver();
+
+    /**
+     * Set receiver number
+     *
      * @param string $number
      * @return bool
      */
-    public function addReceiver($number);
+    public function setReceiver($number);
 
     /**
-     * @return int
-     */
-    public function getReceiversCount();
-
-    /**
+     * Check if message must fit into one text message
+     *
      * @return bool
      */
     public function isSingle();
 
     /**
+     * Disallows to send sms with content that does not fit into one text message
+     * Can be disabled by passing false as first argument.
+     *
      * @param bool $single
      * @return \PromoSMS\Api\Sms\SmsInterface
      */
     public function setSingle($single = true);
+
+    /**
+     * @return boolean
+     */
+    public function isPl();
+
+    /**
+     * @param bool $pl
+     * @return bool
+     */
+    public function setPl($pl = true);
 
     /**
      * @return string

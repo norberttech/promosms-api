@@ -4,22 +4,23 @@ Api is under development and you can't use it or even install by composer.
 Following code is example how you will be able to use it after release.
 
 ```
+<?php
+
 use PromoSMS\Api\Client;
-use PromoSMS\Api\Sms\EkoSms;
+use PromoSMS\Api\Sms\Sms;
 
+$client = new Client('email@domain.com', md5('password'));
 
-$client = new Client('email_login@domain.com', 'password');
-
-$sms = EkoSms();
-$sms->addReceiver('123456789');
-$sms->setMessage('SMS Message');
+$sms = new Sms();
+$sms->setReceiver('123123123');
+$sms->setMessage('SMS message');
 
 $response = $client->send($sms);
 
 if ($response->isValid()) {
-    // dump ids of sent messages
-    var_dump($response->getIds();
+    echo "SMS id: " . $response->getId() . "\n";
 } else {
-    echo $response->getErrorMessage();
+
 }
+
 ```
