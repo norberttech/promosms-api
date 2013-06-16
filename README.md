@@ -2,15 +2,15 @@
 
 Api is under development but you can install it via composer.
 
-```
+```yml
 "require": {
     "norzechowicz/promosms-api": "1.0.x-dev"
 }
 ```
 
-Following code is example how to send sms, check account balance and get delivery report.
+Following code is an example how to send sms and get delivery report.
 
-```
+```php
 <?php
 
 require __DIR__ . '/vendor/autoload.php';
@@ -19,8 +19,6 @@ use PromoSMS\Api\Client;
 use PromoSMS\Api\Sms\Sms;
 
 $client = new Client('login@email.com', md5('password'));
-
-echo "Current account balance is: " . $client->balance()->getAmount() / 100 . "\n";
 
 $sms = new Sms();
 $sms->setReceiver('123123123');
@@ -38,13 +36,30 @@ if ($response->isValid()) {
     } else {
         echo "SMS wasn't received yet. Please check later.\n";
     }
-
 } else {
     // If something went wrong check the status
     // Full status list is available here: http://dev.promosms.pl/sms-api/HTTP_SSL_API#Statusy_zwracane_przez_system
-    echo $response->getStatus();
+    echo "Error status code: " . $response->getStatus();
 }
 
-echo "Current account balance is: " . $client->balance()->getAmount() / 100 . "\n";
-
 ```
+
+Following code is an example how to check account ballance. 
+
+```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use PromoSMS\Api\Client;
+use PromoSMS\Api\Sms\Sms;
+
+$client = new Client('login@email.com', md5('password'));
+echo "Current account balance is: " . $client->balance()->getAmount() / 100 . "\n";
+```
+
+###TODO
+
+* Add MaxSMS support 
+* Add FasterSMS support 
+* Add feature to check how many sms will be sent for text message content. 
