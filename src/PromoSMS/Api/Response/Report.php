@@ -39,10 +39,16 @@ class Report
     protected $status;
 
     /**
+     * @var boolean
+     */
+    protected $received;
+
+    /**
      * @param string $responseText
      */
     public function __construct($responseText)
     {
+        $this->received = false;
         $this->responseText = $responseText;
         $this->parseResponseText();
     }
@@ -81,11 +87,23 @@ class Report
 
 
     /**
+     * Full status list is available here: http://dev.promosms.pl/sms-api/HTTP_SSL_API#Odbi.C3.B3r_raport.C3.B3w_dostarczenia_-_opis_parametr.C3.B3w_dodatkowych
+     *
      * @return null|string
      */
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Return true if message was successfully delivered.
+     *
+     * @return bool
+     */
+    public function isReceived()
+    {
+        return $this->received;
     }
 
     /**
@@ -124,7 +142,7 @@ class Report
         }
 
         if ($this->status === '001') {
-            $this->valid = true;
+            $this->received = true;
         }
     }
 }

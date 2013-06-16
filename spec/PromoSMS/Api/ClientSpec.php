@@ -182,6 +182,23 @@ class ClientSpec extends ObjectBehavior
     }
 
     /**
+     * @param \Guzzle\Http\Client $client
+     * @param \Guzzle\Http\Message\Request $request
+     * @param \Guzzle\Http\Message\Response $response
+     */
+    function it_gets_account_balance($client, $request, $response)
+    {
+        $response->getBody(true)->shouldBeCalled();
+        $client->post('https://api.promosms.pl/checkbalance.php', array(), array(
+            'login' => 'api@example.com',
+            'pass' => 'password',
+            'return' => 'xml'
+        ))->shouldBeCalled()->willReturn($request);
+
+        $this->balance()->shouldReturnAnInstanceOf('PromoSMS\Api\Response\Balance');
+    }
+
+    /**
      * @param \PromoSMS\Api\Sms\Sms $sms
      */
     protected function buildDefaultSms($sms)

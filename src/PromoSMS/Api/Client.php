@@ -4,6 +4,7 @@ namespace PromoSMS\Api;
 
 use Guzzle\Http\ClientInterface;
 use Guzzle\Http\Client as HttpClient;
+use PromoSMS\Api\Response\Balance;
 use PromoSMS\Api\Response\Report;
 use PromoSMS\Api\Response\Response;
 use PromoSMS\Api\Sms\SmsInterface;
@@ -60,14 +61,14 @@ class Client
     public function send(SmsInterface $sms)
     {
         $this->validateSms($sms);
-        $response = $this->getClient()->post($this->getSendUrl(), array(), $this->buildQueryParams($sms))->send();
+        $response = $this->getClient()->post($this->getSendUrl(), array(), $this->buildSmsQueryParams($sms))->send();
 
         return new Response($response->getBody(true));
     }
 
     /**
      * @param $smsId
-     * @return \PromoSMS\Api\Response\Response
+     * @return \PromoSMS\Api\Response\Report
      */
     public function report($smsId)
     {
@@ -77,6 +78,20 @@ class Client
         ))->send();
 
         return new Report($response->getBody(true));
+    }
+
+    /**
+     * @return int
+     */
+    public function balance()
+    {
+        $response = $this->getClient()->post($this->getBalanceUrl(), array(), array(
+            'login' => $this->login,
+            'pass' => $this->password,
+            'return' => 'xml'
+        ))->send();
+
+        return new Balance($response->getBody(true));
     }
 
     /**
@@ -111,6 +126,11 @@ class Client
         return $this->apiUrl . 'getreports.php';
     }
 
+    protected function getBalanceUrl()
+    {
+        return $this->apiUrl . 'checkbalance.php';
+    }
+
     /**
      * @param SmsInterface $sms
      * @throws \InvalidArgumentException
@@ -136,7 +156,7 @@ class Client
      * @param \PromoSMS\Api\Sms\SmsInterface $sms
      * @return array
      */
-    protected function buildQueryParams(SmsInterface $sms)
+    protected function buildSmsQueryParams(SmsInterface $sms)
     {
         $params = array(
             'login' => $this->login,

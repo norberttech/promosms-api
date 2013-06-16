@@ -44,6 +44,8 @@ class Response
     }
 
     /**
+     * Full status list is available here: http://dev.promosms.pl/sms-api/HTTP_SSL_API#Statusy_zwracane_przez_system
+     *
      * @return null|string
      */
     public function getStatus()
