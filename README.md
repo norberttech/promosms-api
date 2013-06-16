@@ -1,5 +1,13 @@
 #Fully object oriented api for PromoSMS.pl service
 
+Api is under development but you can install it via composer.
+
+```
+"require": {
+    "norzechowicz/promosms-api": "1.0.x-dev"
+}
+```
+
 Following code is example how to send sms, check account balance and get delivery report.
 
 ```
@@ -10,12 +18,12 @@ require __DIR__ . '/vendor/autoload.php';
 use PromoSMS\Api\Client;
 use PromoSMS\Api\Sms\Sms;
 
-$client = new Client('norbert@orzechowicz.pl', md5('norbert124'));
+$client = new Client('login@email.com', md5('password'));
 
 echo "Current account balance is: " . $client->balance()->getAmount() / 100 . "\n";
 
 $sms = new Sms();
-$sms->setReceiver('661925557');
+$sms->setReceiver('123123123');
 $sms->setMessage('This new message');
 
 $response = $client->send($sms);
