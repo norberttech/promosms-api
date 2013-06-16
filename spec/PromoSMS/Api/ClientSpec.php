@@ -29,12 +29,6 @@ class ClientSpec extends ObjectBehavior
         $this->getApiUrl()->shouldReturn('https://api.promosms.pl/');
     }
 
-    function it_has_valid_api_url_after_setting_it()
-    {
-        $this->setApiUrl('http://this.is.new.url.com')->shouldReturn($this);
-        $this->getApiUrl()->shouldReturn('http://this.is.new.url.com');
-    }
-
     /**
      * @param \Guzzle\Http\Client $client
      * @param \Guzzle\Http\Message\Request $request
@@ -51,7 +45,8 @@ class ClientSpec extends ObjectBehavior
             'pass' => 'password',
             'to' => '111111111',
             'message' => 'test message',
-            'type' => 'sms'
+            'type' => 'sms',
+            'return' => 'xml',
         ))->shouldBeCalled()->willReturn($request);
 
         $this->send($sms);
@@ -76,6 +71,7 @@ class ClientSpec extends ObjectBehavior
             'to' => '111111111',
             'message' => 'test message',
             'type' => 'sms',
+            'return' => 'xml',
             'single' => 0
         ))->shouldBeCalled()->willReturn($request);
 
@@ -101,6 +97,7 @@ class ClientSpec extends ObjectBehavior
             'to' => '111111111',
             'message' => 'test message',
             'type' => 'sms',
+            'return' => 'xml',
             'pl' => 1
         ))->shouldBeCalled()->willReturn($request);
 
@@ -127,6 +124,7 @@ class ClientSpec extends ObjectBehavior
             'to' => '111111111',
             'message' => 'test message',
             'type' => 'sms',
+            'return' => 'xml',
             'time' => 61371296027
         ))->shouldBeCalled()->willReturn($request);
 
@@ -164,6 +162,23 @@ class ClientSpec extends ObjectBehavior
         $sms->getReceiver()->shouldBeCalled()->willReturn('111111111');
         $sms->getMessage()->shouldBeCalled()->willReturn('');
         $this->shouldThrow(new \InvalidArgumentException("Cant send sms with empty message"))->during('send', array($sms));
+    }
+
+    /**
+     * @param \Guzzle\Http\Client $client
+     * @param \Guzzle\Http\Message\Request $request
+     * @param \Guzzle\Http\Message\Response $response
+     */
+    function it_gets_report_about_sms_delivery($client, $request, $response)
+    {
+        $response->getBody(true)->shouldBeCalled();
+
+        $client->post('https://api.promosms.pl/getreports.php', array(), array(
+            'smsid' => '3095dbfcb9273218857172b1e75e7cd5',
+            'return' => 'xml',
+        ))->shouldBeCalled()->willReturn($request);
+
+        $this->report('3095dbfcb9273218857172b1e75e7cd5');
     }
 
     /**

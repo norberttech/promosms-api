@@ -4,6 +4,7 @@ namespace PromoSMS\Api;
 
 use Guzzle\Http\ClientInterface;
 use Guzzle\Http\Client as HttpClient;
+use PromoSMS\Api\Response\Report;
 use PromoSMS\Api\Response\Response;
 use PromoSMS\Api\Sms\SmsInterface;
 
@@ -52,17 +53,6 @@ class Client
     }
 
     /**
-     * @param string $url
-     * @return \PromoSMS\Api\Client
-     */
-    public function setApiUrl($url)
-    {
-        $this->apiUrl = $url;
-
-        return $this;
-    }
-
-    /**
      * @param \PromoSMS\Api\Sms\SmsInterface $sms
      * @throws \InvalidArgumentException
      * @return \PromoSMS\Api\Response\Response
@@ -73,6 +63,20 @@ class Client
         $response = $this->getClient()->post($this->getSendUrl(), array(), $this->buildQueryParams($sms))->send();
 
         return new Response($response->getBody(true));
+    }
+
+    /**
+     * @param $smsId
+     * @return Response
+     */
+    public function report($smsId)
+    {
+        $response = $this->getClient()->post($this->getReportUrl(), array(), array(
+            'smsid' => $smsId,
+            'return' => 'xml'
+        ))->send();
+
+        return new Report($response->getBody(true));
     }
 
     /**
@@ -95,6 +99,16 @@ class Client
     protected function getSendUrl()
     {
         return $this->apiUrl . 'send.php';
+    }
+
+    /**
+     * Add getreports.php to api url
+     *
+     * @return string
+     */
+    protected function getReportUrl()
+    {
+        return $this->apiUrl . 'getreports.php';
     }
 
     /**
@@ -127,9 +141,10 @@ class Client
         $params = array(
             'login' => $this->login,
             'pass' => $this->password,
-            'type' => $sms->getType(),
             'to' =>  $sms->getReceiver(),
-            'message' => $sms->getMessage()
+            'message' => $sms->getMessage(),
+            'type' => $sms->getType(),
+            'return' => 'xml'
         );
 
         if (!$sms->isSingle()) {

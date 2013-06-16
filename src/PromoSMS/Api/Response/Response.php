@@ -2,6 +2,10 @@
 
 namespace PromoSMS\Api\Response;
 
+/**
+ * Class Response
+ * @author Norbert Orzechowicz <norbert@fsi.pl>
+ */
 class Response
 {
     /**
@@ -76,23 +80,27 @@ class Response
      */
     protected function parseResponseText()
     {
-        preg_match('/^Status: ([0-9]{3}), Id: ([a-fA-F\d]+|), Number: ([0-9]+|)$/', $this->responseText, $statusMatches);
+        if (!empty($this->responseText)) {
+            try {
+                $response = new \SimpleXMLElement($this->responseText);
 
-        if (isset($statusMatches[1])) {
-            $this->status = $statusMatches[1];
-        }
+                if (isset($response->sms)) {
+                    $this->status = (string) $response->sms->status;
 
-        if (isset($statusMatches[2]) && !empty($statusMatches[2])) {
-            $this->id = $statusMatches[2];
-        }
+                    if (!empty($response->sms->number)) {
+                        $this->number = (string) $response->sms->number;
+                    }
 
-        if (isset($statusMatches[3]) && !empty($statusMatches[3])) {
-            $this->number = $statusMatches[3];
+                    if (!empty($response->sms->smsid)) {
+                        $this->id = (string) $response->sms->smsid;
+                    }
+                }
+
+            } catch (\Exception $e) {}
         }
 
         if ($this->status === '001') {
             $this->valid = true;
         }
     }
-
 }

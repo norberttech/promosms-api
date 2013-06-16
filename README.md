@@ -6,21 +6,25 @@ Following code is example how you will be able to use it after release.
 ```
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
 use PromoSMS\Api\Client;
 use PromoSMS\Api\Sms\Sms;
 
-$client = new Client('email@domain.com', md5('password'));
+$client = new Client('login@email.com', md5('password'));
 
 $sms = new Sms();
 $sms->setReceiver('123123123');
-$sms->setMessage('SMS message');
+$sms->setMessage('This is message content');
 
 $response = $client->send($sms);
 
 if ($response->isValid()) {
-    echo "SMS id: " . $response->getId() . "\n";
-} else {
+    $report = $client->report($response->getId());
 
+    echo "Delivery status: " . $report->getStatus();
+} else {
+    echo $response->getStatus();
 }
 
 ```

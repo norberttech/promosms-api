@@ -19,10 +19,10 @@ class ResponseSpec extends ObjectBehavior
 
     function it_return_response_status_code_id_and_number()
     {
-        $this->beConstructedWith('Status: 001, Id: d2786e5abf5439f3f169215951da9f09b32b67b5, Number: 48123123123');
+        $this->beConstructedWith('<?xml version="1.0" encoding="UTF-8" ?><message><sms><number>48123123123</number><smsid>1b4138337c8b55c3736a32624b23c3328029d50f</smsid><status>001</status><description>Wyslano prawidlowo</description></sms></message>');
 
         $this->getStatus()->shouldReturn('001');
-        $this->getId()->shouldReturn('d2786e5abf5439f3f169215951da9f09b32b67b5');
+        $this->getId()->shouldReturn('1b4138337c8b55c3736a32624b23c3328029d50f');
         $this->getNumber()->shouldReturn('48123123123');
     }
 
@@ -35,7 +35,7 @@ class ResponseSpec extends ObjectBehavior
 
     function it_is_not_valid_when_response_different_than_001()
     {
-        $this->beConstructedWith('Status: 021, Id: , Number: ');
+        $this->beConstructedWith('<?xml version="1.0" encoding="UTF-8" ?><message><sms><number></number><smsid></smsid><status>021</status><description>Zly login lub haslo</description></sms></message>');
 
         $this->isValid()->shouldReturn(false);
     }
