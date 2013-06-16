@@ -49,7 +49,7 @@ class ClientSpec extends ObjectBehavior
             'return' => 'xml',
         ))->shouldBeCalled()->willReturn($request);
 
-        $this->send($sms);
+        $this->send($sms)->shouldReturnAnInstanceOf('PromoSMS\Api\Response\Response');
     }
 
     /**
@@ -75,7 +75,7 @@ class ClientSpec extends ObjectBehavior
             'single' => 0
         ))->shouldBeCalled()->willReturn($request);
 
-        $this->send($sms);
+        $this->send($sms)->shouldReturnAnInstanceOf('PromoSMS\Api\Response\Response');
     }
 
     /**
@@ -101,7 +101,7 @@ class ClientSpec extends ObjectBehavior
             'pl' => 1
         ))->shouldBeCalled()->willReturn($request);
 
-        $this->send($sms);
+        $this->send($sms)->shouldReturnAnInstanceOf('PromoSMS\Api\Response\Response');
     }
 
     /**
@@ -128,7 +128,7 @@ class ClientSpec extends ObjectBehavior
             'time' => 61371296027
         ))->shouldBeCalled()->willReturn($request);
 
-        $this->send($sms);
+        $this->send($sms)->shouldReturnAnInstanceOf('PromoSMS\Api\Response\Response');
     }
 
     /**
@@ -178,7 +178,7 @@ class ClientSpec extends ObjectBehavior
             'return' => 'xml',
         ))->shouldBeCalled()->willReturn($request);
 
-        $this->report('3095dbfcb9273218857172b1e75e7cd5');
+        $this->report('3095dbfcb9273218857172b1e75e7cd5')->shouldReturnAnInstanceOf('PromoSMS\Api\Response\Report');
     }
 
     /**

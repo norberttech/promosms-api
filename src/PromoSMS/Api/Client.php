@@ -67,7 +67,7 @@ class Client
 
     /**
      * @param $smsId
-     * @return Response
+     * @return \PromoSMS\Api\Response\Response
      */
     public function report($smsId)
     {
@@ -80,7 +80,7 @@ class Client
     }
 
     /**
-     * @return HttpClient|ClientInterface
+     * @return \Guzzle\Http\Client
      */
     protected function getClient()
     {
